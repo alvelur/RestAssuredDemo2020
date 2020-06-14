@@ -11,7 +11,7 @@ This initiative aims to motivate and introduce people who do not know how to tes
 ## Steps 
 This project is fully functional having the previously mentioned requirements installed,but first we will have to create our Fake json server to send the http requests
 
- - We go to this github link [Link Json Server](https://github.com/typicode/json-server)and then clone the repository
+ - We go to this github link [Link Json Server](https://github.com/typicode/json-server) and then clone the repository
 
 
 ## Author
