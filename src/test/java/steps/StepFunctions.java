@@ -1,21 +1,27 @@
 package steps;
 
+import DataSource.DataSource;
 import com.google.gson.Gson;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
+import pojo.PostEndavan;
 
+import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItem;
 
 public class StepFunctions {
 
 
-    private String baseUrl = "http://localhost:3000";
+    private String baseUrl = "http://localhost:3000/";
     private RequestSpecification requestSpecification;
     private Response response;
     private ValidatableResponse validatableResponse;
+    private int id;
+    DataSource dataSource = new DataSource();
+    private PostEndavan postEndavan;
 
 
     /**
@@ -26,7 +32,7 @@ public class StepFunctions {
     public void performPostOperation(String postAddress){
 
         Gson gson = new Gson();
-        String postJsonObject = gson.toJson(.setPostCampaign());
+        String postJsonObject = gson.toJson(dataSource.setPostEndavan());
         String postUrl = baseUrl + postAddress;
 
         requestSpecification =   given().
@@ -34,17 +40,26 @@ public class StepFunctions {
                 with().body(postJsonObject);
 
         response = requestSpecification.when().post(postUrl);
-        validatableResponse = response.then().assertThat().statusCode(200);
-        (response);
+        validatableResponse = response.then().assertThat().statusCode(201);
+        getPostEndavan(response);
+
+    }
+
+    public void getPostEndavan(Response response){
+
+        if (postEndavan == null) {
+            PostEndavan postEndavan = dataSource.getPostEndavan(response);
+            id = postEndavan.getId();
+        }
     }
 
     /**
      * This method has a String as input parameter, which means the address to which it will make the http request
      * And the method makes a get request to the endpoint
      */
-    public void performGetOperation(String getAddress) throws InterruptedException {
+    public void performGetOperation(String getAddress) {
 
-        String getUrl = baseUrl + getAddress;
+        String getUrl = baseUrl + getAddress + id;
 
         requestSpecification =
                 given().
@@ -68,7 +83,9 @@ public class StepFunctions {
                 .body("name",hasItem(item));
 
     }
-    public void  performDeleteOperationWithId(String deleteAddress){
+
+
+    public void  performDeleteOperation(String deleteAddress){
 
         String deleteUrl = baseUrl + deleteAddress + id;
         requestSpecification =
@@ -84,34 +101,13 @@ public class StepFunctions {
 
     /**
      * This method has a String as input parameter, which means the address to which it will make the http request
-     *  And the method makes a Patch request to the endpoint
-     */
-    public void performPatchOperation(String patchAddress){
-
-        Gson gson = new Gson();
-        String patchJsonObject = gson.toJson(database.setPatchStatus(id));
-
-        String patchUrl = baseUrl + patchAddress;
-        requestSpecification =
-                given().
-                        contentType(ContentType.JSON);
-
-        response = requestSpecification. with().body(patchJsonObject).patch(patchUrl);
-        validatableResponse= response.
-                then()
-                .assertThat()
-                .statusCode(200);
-    }
-
-    /**
-     * This method has a String as input parameter, which means the address to which it will make the http request
      *  And the method makes a PUT request to the endpoint
      */
 
     public void performPutOperation(String putAddress){
 
         Gson gson = new Gson();
-        String putJsonObject = gson.toJson(database.getPutCampaign());
+        String putJsonObject = gson.toJson(dataSource.setPUTEndavan());
 
         String putUrl = baseUrl + putAddress+ id;
         requestSpecification =

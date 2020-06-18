@@ -11,48 +11,43 @@ import static org.hamcrest.Matchers.*;
 
 public class BDDStyledMethod {
 
-    public static void SimpleGETPost(String postNumber){
+    public static void simpleGETPost(String postNumber){
         given().contentType(ContentType.JSON);
         when().get(String.format("http://localhost:3000/posts/%s", postNumber)).
-                then().body("author",is("Karthik KK"));
+                then().body("author",is("Juan Jose"));
     }
 
-    public static void ContainsCollection(){
-        given().
-                contentType(ContentType.JSON);
-        when().
-                get("http://localhost:3000/posts/").
-                then().body("author",containsInAnyOrder("Karthik KK",null,"Mono")).statusCode(200);
-    }
-
-     public static void PerformPathParameter(){
+     public static void performPathParameter(){
         given()
                 .contentType(ContentType.JSON).
         with()
-                .pathParams("post", 1).
+                .pathParams("post", 8).
         when()
                 .get("http://localhost:3000/posts/{post}").
 
         then()
-                .body("author", containsString("Karthik KK"));
+                .body("author", containsString("Juan Jose"));
      }
-    public static void PerformQueryParameter(){
+    public static void performDelete(){
         given()
                 .contentType(ContentType.JSON).
-                queryParam("id",1).
+                with()
+                .pathParams("post", 8).
                 when()
-                .get("http://localhost:3000/posts/").
+                .delete("http://localhost:3000/posts/{post}").
 
                 then()
-                .body("author", hasItem("Karthik KK"));
+                .statusCode(200);
     }
 
-    public static void PerformPostWithBodyParamether(){
+    public static void performPostWithBodyParamether(){
         HashMap<String,String> postContect = new HashMap<String, String>();
-        postContect.put("id","5");
-        postContect.put("title","Robotica");
-        postContect.put("author","Juanjo");
-
+        postContect.put("id","8");
+        postContect.put("title","Presentacion DEMO ");
+        postContect.put("author","Juan Jose");
+        postContect.put("company","Endava");
+        postContect.put("City"," Medellin");
+        postContect.put("Favorite Food","Ajiaco");
 
         given()
                 .contentType(ContentType.JSON).
@@ -62,7 +57,7 @@ public class BDDStyledMethod {
                 .post("http://localhost:3000/posts").
 
         then()
-                .body("author", Is.is("Juanjo"));
+                .body("author", Is.is("Juan Jose"));
 
     }
 
